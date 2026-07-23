@@ -1,37 +1,29 @@
-# DevOps + AIOps Series
+# DevOps + AIOps Playbook
 
-> A full end-to-end DevOps project with AIOps integration — so you can connect the dots between how AI is helping automate DevOps tasks today.
+> An end-to-end DevOps project with AIOps integration, built as a hands-on portfolio piece connecting how AI assists modern DevOps workflows.
 
 ---
 
-## Welcome
+## About this project
 
-Hey everyone!
+This is my own DevOps/Cloud engineering portfolio project — an end-to-end system I built to practice and demonstrate:
 
-Welcome to my DevOps + AI series where we build an end-to-end DevOps project with an AIOps integration.
+- Building microservices locally
+- Using Claude and AI tools to assist development
+- Deploying everything step by step
+- Migrating the system to the cloud on AWS EKS
+- Setting up a full CI/CD pipeline with GitHub Actions
+- Implementing GitOps workflows with ArgoCD
+- Integrating AIOps capabilities with AWS Bedrock
 
-A lot of you have been asking: *"when are you going to share a full DevOps project?"*
-
-Well — here we are.
-
-In this series we will:
-
-- Build microservices locally
-- Use Claude and AI tools to assist development
-- Deploy everything step by step
-- Migrate the system to the cloud on AWS EKS
-- Set up a full CI/CD pipeline with GitHub Actions
-- Implement GitOps workflows with ArgoCD
-- Integrate AIOps capabilities with AWS Bedrock
-
-By the end of this series, you won't just know tools — you'll understand how real DevOps systems are designed and deployed.
+The goal isn't just knowing the tools — it's understanding how real DevOps systems are designed, deployed, and debugged when they inevitably break.
 
 ---
 
 ## Repository Structure
 
 ```
-DevOps-Practice-Guide/
+devops-ai-playbook/
 ├── docs/
 │   ├── part1-system-design.md     # System design foundations (Part 1)
 │   ├── part2-workflow.md          # Full workflow with AIOps (Part 2)
@@ -51,12 +43,12 @@ DevOps-Practice-Guide/
 
 ---
 
-## Series Structure
+## Project Structure Walkthrough
 
 ### Claude Setup — AI Assistant Configuration
 [`docs/claude-setup.md`](docs/claude-setup.md)
 
-Before jumping into the project, this step walks through how Claude Code is configured as the AI assistant throughout this series.
+Before jumping into the project, this step walks through how Claude Code is configured as the AI assistant throughout this project.
 
 Three things are set up:
 
@@ -114,7 +106,7 @@ Then we actually build the project. You'll see:
 ### Part 4 — AIOps Integration
 [`projects/aiops-assistant/README.md`](projects/aiops-assistant/README.md)
 
-Finally, we explore how AI helps with:
+Finally, this part explores how AI helps with:
 
 - Monitoring and anomaly detection
 - Log analysis at scale
@@ -125,22 +117,9 @@ Because modern DevOps is no longer just automation — it's **automation + intel
 
 ---
 
-## Bonus Challenge
+## Deliberate Troubleshooting Practice
 
-You'll get access to this entire repository.
-
-But there's a catch.
-
-The repository includes **intentional issues and troubleshooting tasks**.
-
-Why? Because AI has made things easier. But if you want to grow as an engineer, you must learn how to break systems, debug systems, and fix systems.
-
-Once you implement the project:
-
-1. Fork the repository
-2. Deploy the system
-3. Troubleshoot the issues
-4. Share what you learned — and tag me so I know you're building along
+Part of the point of this project is to not just have it work on the first try. A number of intentional issues and gaps were left in along the way — broken CI credentials, unfilled config placeholders, misconfigured trust policies, missing GitOps sync settings — specifically so that debugging them (reading logs, checking CloudTrail, tracing root causes) is part of the exercise, not something to route around with AI. Real DevOps skill comes from breaking systems, debugging systems, and fixing systems, not just following steps that already work.
 
 ---
 
