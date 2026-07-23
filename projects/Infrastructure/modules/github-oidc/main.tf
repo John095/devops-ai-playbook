@@ -18,6 +18,12 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
 
 # Role GitHub Actions assumes via short-lived, per-run credentials.
 # The "sub" condition scopes this to a single repo - any branch/tag/PR within it.
+#
+# GitHub now issues "immutable" subject claims by default: owner/repo names are
+# suffixed with their permanent numeric IDs (e.g. "repo:owner@123/repo@456:...")
+# so the claim keeps matching even if the org or repo is later renamed. Plain
+# "repo:owner/repo:*" will NOT match these tokens - verified via CloudTrail
+# (AssumeRoleWithWebIdentity AccessDenied events show the actual "sub" received).
 
 data "aws_iam_policy_document" "github_actions_assume" {
   statement {
@@ -38,7 +44,7 @@ data "aws_iam_policy_document" "github_actions_assume" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:*"]
+      values   = ["repo:${split("/", var.github_repo)[0]}@${var.github_owner_id}/${split("/", var.github_repo)[1]}@${var.github_repo_id}:*"]
     }
   }
 }

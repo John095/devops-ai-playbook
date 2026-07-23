@@ -47,4 +47,6 @@ admin_principal_arns = [
   "arn:aws:iam::175948132727:user/john-ndirangu"
 ]
 
-github_repo = "John095/devops-ai-playbook"
+github_repo     = "John095/devops-ai-playbook"
+github_owner_id = "47578210"
+github_repo_id  = "1309550803"

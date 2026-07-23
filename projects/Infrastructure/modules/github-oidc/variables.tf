@@ -1,5 +1,15 @@
 variable "github_repo" {
-  description = "GitHub repo allowed to assume this role, as \"org/repo\""
+  description = "GitHub repo allowed to assume this role, as \"org/repo\" (used for tagging/readability only)"
+  type        = string
+}
+
+variable "github_owner_id" {
+  description = "Numeric GitHub user/org ID (immutable, survives renames) - find via `gh api /users/<owner> --jq .id`"
+  type        = string
+}
+
+variable "github_repo_id" {
+  description = "Numeric GitHub repo ID (immutable, survives renames) - find via `gh api /repos/<owner>/<repo> --jq .id`"
   type        = string
 }
 
