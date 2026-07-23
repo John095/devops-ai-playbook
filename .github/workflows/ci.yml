@@ -83,12 +83,14 @@ jobs:
           # Match on the stable "/<service>:<anything>" suffix, not the account/region
           # prefix - this way it replaces the <AWS_ACCOUNT_ID> placeholder just as well
           # as a previously-set real value, instead of silently no-op'ing when they differ.
+          # The leading "(image: *)" is captured and re-emitted via \1 so a greedy .*
+          # can't eat the "image: " key itself, which is what happened without it.
           for SERVICE in auth gateway orders order-service product-service user-service; do
             MANIFEST="gitops/k8s/backend/${SERVICE}.yml"
-            sed -i "s|.*\.dkr\.ecr\..*\.amazonaws\.com/${SERVICE}:.*|${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/${SERVICE}:${NEW_TAG}|g" $MANIFEST
+            sed -i -E "s|(image: *).*\.dkr\.ecr\..*\.amazonaws\.com/${SERVICE}:.*|\1${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/${SERVICE}:${NEW_TAG}|g" $MANIFEST
           done
 
-          sed -i "s|.*\.dkr\.ecr\..*\.amazonaws\.com/frontend:.*|${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/frontend:${NEW_TAG}|g" gitops/k8s/frontend/deployment.yml
+          sed -i -E "s|(image: *).*\.dkr\.ecr\..*\.amazonaws\.com/frontend:.*|\1${ACCOUNT}.dkr.ecr.${REGION}.amazonaws.com/frontend:${NEW_TAG}|g" gitops/k8s/frontend/deployment.yml
 
       - name: Commit and push updated manifests
         run: |
