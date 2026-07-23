@@ -31,6 +31,13 @@ module "ecr" {
   repositories = var.repositories
 }
 
+module "github_oidc" {
+  source = "./modules/github-oidc"
+
+  github_repo     = var.github_repo
+  repository_arns = module.ecr.repository_arns
+}
+
 
 data "aws_eks_cluster_auth" "eks" {
   name = module.eks.cluster_name

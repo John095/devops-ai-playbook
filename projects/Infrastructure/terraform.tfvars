@@ -46,3 +46,5 @@ repositories = [
 admin_principal_arns = [
   "arn:aws:iam::175948132727:user/john-ndirangu"
 ]
+
+github_repo = "John095/devops-ai-playbook"

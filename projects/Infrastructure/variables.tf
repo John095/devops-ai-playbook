@@ -71,3 +71,8 @@ variable "admin_principal_arns" {
   type        = list(string)
   default     = []
 }
+
+variable "github_repo" {
+  description = "GitHub repo allowed to assume the CI role via OIDC, as \"org/repo\""
+  type        = string
+}
