@@ -188,3 +188,58 @@ resource "aws_eks_addon" "ebs_csi" {
     aws_iam_role_policy_attachment.ebs_csi_irsa_policy
   ]
 }
+
+# IRSA for aws-for-fluent-bit -> CloudWatch Logs
+
+data "aws_iam_policy_document" "fluent_bit_assume_role" {
+  statement {
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "${replace(aws_eks_cluster.eks.identity[0].oidc[0].issuer, "https://", "")}:sub"
+      values   = ["system:serviceaccount:amazon-cloudwatch:aws-for-fluent-bit"]
+    }
+  }
+}
+
+resource "aws_iam_role" "fluent_bit_irsa" {
+  name               = "${var.cluster_name}-fluent-bit-irsa"
+  assume_role_policy = data.aws_iam_policy_document.fluent_bit_assume_role.json
+}
+
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "fluent_bit_cloudwatch_logs" {
+  statement {
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:PutLogEvents",
+      "logs:PutRetentionPolicy",
+    ]
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/eks/boutique/pods:*",
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/eks/boutique/pods",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "fluent_bit_cloudwatch_logs" {
+  name   = "${var.cluster_name}-fluent-bit-cloudwatch-logs"
+  policy = data.aws_iam_policy_document.fluent_bit_cloudwatch_logs.json
+}
+
+resource "aws_iam_role_policy_attachment" "fluent_bit_irsa_policy" {
+  role       = aws_iam_role.fluent_bit_irsa.name
+  policy_arn = aws_iam_policy.fluent_bit_cloudwatch_logs.arn
+}

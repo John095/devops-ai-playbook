@@ -10,6 +10,12 @@ resource "kubernetes_namespace_v1" "monitoring" {
   }
 }
 
+resource "kubernetes_namespace_v1" "amazon_cloudwatch" {
+  metadata {
+    name = "amazon-cloudwatch"
+  }
+}
+
 terraform {
   required_providers {
     kubernetes = {
@@ -82,5 +88,49 @@ resource "helm_release" "monitoring" {
 
   depends_on = [
     kubernetes_namespace_v1.monitoring
+  ]
+}
+
+resource "helm_release" "fluent_bit" {
+  name      = "aws-for-fluent-bit"
+  namespace = kubernetes_namespace_v1.amazon_cloudwatch.metadata[0].name
+
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "aws-for-fluent-bit"
+
+  create_namespace = false
+
+  values = [
+    yamlencode({
+      cloudWatch = {
+        enabled          = true
+        region           = "us-east-1"
+        logGroupName     = "/eks/boutique/pods"
+        logStreamPrefix  = "from-fluent-bit-"
+      }
+      # Chart's newer cloudWatchLogs output is disabled to avoid a second,
+      # unconfigured log group silently failing with AccessDenied.
+      cloudWatchLogs = {
+        enabled = false
+      }
+      firehose = {
+        enabled = false
+      }
+      kinesis = {
+        enabled = false
+      }
+      elasticsearch = {
+        enabled = false
+      }
+      serviceAccount = {
+        annotations = {
+          "eks.amazonaws.com/role-arn" = var.fluent_bit_irsa_role_arn
+        }
+      }
+    })
+  ]
+
+  depends_on = [
+    kubernetes_namespace_v1.amazon_cloudwatch
   ]
 }

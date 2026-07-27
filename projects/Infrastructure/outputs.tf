@@ -13,3 +13,7 @@ output "ecr_urls" {
 output "github_actions_role_arn" {
   value = module.github_oidc.role_arn
 }
+
+output "fluent_bit_irsa_role_arn" {
+  value = module.eks.fluent_bit_irsa_role_arn
+}

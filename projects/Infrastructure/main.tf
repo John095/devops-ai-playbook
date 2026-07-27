@@ -71,6 +71,8 @@ module "argocd" {
     helm       = helm.eks
   }
 
+  fluent_bit_irsa_role_arn = module.eks.fluent_bit_irsa_role_arn
+
   depends_on = [module.eks]
 }
 
